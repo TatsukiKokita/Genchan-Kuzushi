@@ -42,7 +42,7 @@
         setTimeout(function () {
             Engine.run(_engine);
             Demo.updateScene();
-        }, 800);
+        }, 0.1);
 
 //        window.addEventListener('deviceorientation', Demo.updateGravity, true);
 //        window.addEventListener('touchstart', Demo.fullscreen);
@@ -139,9 +139,9 @@
             }
             if (genchanFlag === 2 && rock.position.y < 300) {
                 genchanFlag = 3;
-                    //oldrock = rock;
+                    oldrock = rock;
                     //一旦見えない何かに置き換えて、げんちゃんが止まってから新しいげんちゃんをセット
-                    rock = Bodies.circle(152, 300, 7.5, rockOptions);
+                    rock = Bodies.circle(152, 300, 0.1, rockOptions);
                     World.add(_engine.world, rock);
                     elastic.bodyB = rock;
             }
@@ -202,10 +202,10 @@
         Engine.clear(_engine);
 
         var offset = 5;
-        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 5.5, {isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 5.5, {isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 5.5, _sceneHeight + 0.5, {isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 5.5, _sceneHeight + 0.5, {isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {isStatic: true}));
     };
 
 
