@@ -1,0 +1,26 @@
+{
+  "version": "0.1.0",
+  "name": "test",
+  "description": "A template with the bare minimum structure",
+  "launch_path": "/index.html",
+  "icons": {
+    "16": "/img/icon.png"
+  },
+  "developer": {
+    "name": "Your name",
+    "url": "http://example.com"
+  },
+  "type": "privileged",
+  "permissions": {},
+  "installs_allowed_from": [
+    "*"
+  ],
+  "locales": {
+    "es": {
+      "name": "Aplicacion vacia privilegiada",
+      "description": "Una plantilla con la minima estructura",
+      "permissions": {}
+    }
+  },
+  "default_locale": "en"
+}
