@@ -39,17 +39,19 @@
             }
         });
 
+        _engine.enableSleeping = true;
+        
         setTimeout(function () {
             Engine.run(_engine);
             Demo.updateScene();
         }, 0.1);
 
 //        window.addEventListener('deviceorientation', Demo.updateGravity, true);
-//        window.addEventListener('touchstart', Demo.fullscreen);
-        window.addEventListener('orientationchange', function () {
-//            Demo.updateGravity();
-            Demo.updateScene();
-        }, false);
+////        window.addEventListener('touchstart', Demo.fullscreen);
+//        window.addEventListener('orientationchange', function () {
+////            Demo.updateGravity();
+//            Demo.updateScene();
+//        }, false);
     };
 
     window.addEventListener('load', Demo.init);
@@ -73,28 +75,36 @@
 //                        }
 //                    }
 //                });
-        var stack = Composites.stack(32, 50, 8, 6, 0, 0, function (x, y, column, row) {
-
-            return Bodies.rectangle(x, y, 30, 10, {isStatic: true});
-//            switch (Math.round(Common.random(0, 1))) {
-//                
-//            case 0:
-//                if (Common.random() < 0.8) {
-//                    return Bodies.rectangle(x, y, Common.random(20, 40), Common.random(20, 40), { friction: 0.01, restitution: 0.4 });
-//                } else {
-//                    return Bodies.rectangle(x, y, Common.random(80, 120), Common.random(20, 30), { friction: 0.01, restitution: 0.4 });
-//                }
-//                break;
-//            case 1:
-//                return Bodies.polygon(x, y, Math.round(Common.random(4, 6)), Common.random(20, 40), { friction: 0.01, restitution: 0.4 });
-//            
-//            }
-        });
+        var blocks = new Object();
+        blockCount = 0;
+        for (var x=0;x<8;x++) {
+            for(var y=0;y<6;y++) {
+                blocks[blockCount] =  Bodies.rectangle(32+15+30*x,50+10*y,30,10,{density:100,isStatic:false,isSleeping:true});
+                blockCount++;
+            }
+        }
+//        var stack = Composites.stack(32, 50, 8, 6, 0, 0, function (x, y, column, row) {
+//
+//            return Bodies.rectangle(x, y, 30, 10, {isStatic: true});
+////            switch (Math.round(Common.random(0, 1))) {
+////                
+////            case 0:
+////                if (Common.random() < 0.8) {
+////                    return Bodies.rectangle(x, y, Common.random(20, 40), Common.random(20, 40), { friction: 0.01, restitution: 0.4 });
+////                } else {
+////                    return Bodies.rectangle(x, y, Common.random(80, 120), Common.random(20, 30), { friction: 0.01, restitution: 0.4 });
+////                }
+////                break;
+////            case 1:
+////                return Bodies.polygon(x, y, Math.round(Common.random(4, 6)), Common.random(20, 40), { friction: 0.01, restitution: 0.4 });
+////            
+////            }
+//        });
 //        var bodyStackX = Composites.stack(5,5,2,1,_sceneWidth-5,0,function(x,y,column,row){
 //            return Bodies.rectangle(x, y, 1, _sceneHeight,{ density: 1/_sceneHeight,isStatic:true,friction:0});
 //        });
 //        var bodyStackY = Composites.stack(5,5,1,2,0,_sceneHeight,function(x,y,column,row){
-//            return Bodies.rectangle(x, y, _sceneWidth,1,{ density: 1/_sceneWidth,isStatic:true,friction:0});
+//            return Bodies.rectangle(x, y, _sceneWidth,1,{ density: 1/_sceneWidth,isStati  c:true,friction:0});
 //        });
 
         rockOptions = {restitution: 1.25, frictionAir: 0, friction: 0,
@@ -115,18 +125,21 @@
                 strokeStyle: '#dfa417'
             }
         });
-
-        var genchan = Bodies.circle(152, 300, 7.5, {restitution: 1.25, frictionAir: 0, friction: 0,
-            render: {//ボールのレンダリングの設定
-                sprite: {//スプライトの設定
-                    texture: './img/resize/player.png' //スプライトに使うテクスチャ画像を指定
-                }
-            }
-        });
+//
+//        var genchan = Bodies.circle(152, 300, 7.5, {restitution: 1.25, frictionAir: 0, friction: 0,
+//            render: {//ボールのレンダリングの設定
+//                sprite: {//スプライトの設定
+//                    texture: './img/resize/player.png' //スプライトに使うテクスチャ画像を指定
+//                }
+//            }
+//        });
 
         World.add(_world, [rock, elastic]);
-        World.add(_world, stack);
+        for (i=0;i<blockCount;i++){
+            World.add(_world, blocks[i]);
+        }
 
+        
         Events.on(_engine, 'tick', function (event) {
             if (_engine.input.mouse.button !== -1 && genchanFlag === 3) {
                 genchanFlag = 0;
@@ -144,6 +157,11 @@
                     rock = Bodies.circle(152, 300, 0.1, rockOptions);
                     World.add(_engine.world, rock);
                     elastic.bodyB = rock;
+            }
+            for(b=0;b<blockCount;b++){
+                if(blocks[b].isSleeping === false){
+                    World.remove(_engine.world, blocks[b]);
+                }
             }
         });
         var renderOptions = _engine.render.options;
