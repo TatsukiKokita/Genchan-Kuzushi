@@ -14,6 +14,8 @@
             MouseConstraint = Matter.MouseConstraint;
 
     var genchanFlag = 0;
+    var genchanHp = 3;
+    var oldrock = {};
 
     var Demo = {};
 
@@ -59,7 +61,17 @@
     Demo.mixed = function () {
         var _world = _engine.world;
 
-        Demo.reset();
+        Common._seed = 0;
+
+        World.clear(_world);
+        Engine.clear(_engine);
+
+        var offset = 5;
+        var underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true});
+        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
+        World.addBody(_world, underBlock);
+        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
 
         _world.gravity.x = 0;
         _world.gravity.y = 0;
@@ -107,7 +119,7 @@
 //            return Bodies.rectangle(x, y, _sceneWidth,1,{ density: 1/_sceneWidth,isStati  c:true,friction:0});
 //        });
 
-        rockOptions = {restitution: 1.25, frictionAir: 0, friction: 0,
+        rockOptions = {restitution: 0.1, frictionAir: 0, friction: 0,
             render: {//ボールのレンダリングの設定
                 sprite: {//スプライトの設定
                     texture: './img/resize/player.png' //スプライトに使うテクスチャ画像を指定
@@ -141,26 +153,48 @@
 
         
         Events.on(_engine, 'tick', function (event) {
-            if (_engine.input.mouse.button !== -1 && genchanFlag === 3) {
+            
+            if (_engine.input.mouse.button !== -1 && genchanFlag === 5) {
                 genchanFlag = 0;
             }
-            if (_engine.input.mouse.button !== -1 && (rock.position.x !== 152 || rock.position.y !== 300) && genchanFlag === 0) {
-                genchanFlag = 1;
+            if (_engine.input.mouse.button !== -1 && rock.isSleeping !== true && genchanFlag === 0){
+                genchanFlag=1;
             }
-            if (_engine.input.mouse.button === -1 && (rock.position.y > 350) && genchanFlag === 1) {
+            if (_engine.input.mouse.button !== -1 && (rock.position.x !== 152 || rock.position.y !== 300) && genchanFlag === 1) {
                 genchanFlag = 2;
             }
-            if (genchanFlag === 2 && rock.position.y < 300) {
+            if (_engine.input.mouse.button === -1 && (rock.position.y > 350) && genchanFlag === 2) {
                 genchanFlag = 3;
+            }
+            if (genchanFlag === 3 && rock.position.y < 300) {
+                genchanFlag = 4;
                     oldrock = rock;
-                    //一旦見えない何かに置き換えて、げんちゃんが止まってから新しいげんちゃんをセット
-                    rock = Bodies.circle(152, 300, 0.1, rockOptions);
+                    rock = Bodies.circle(152, 350,0.1  , rockOptions);
                     World.add(_engine.world, rock);
                     elastic.bodyB = rock;
+                    underBlock.isStatic = false;
             }
             for(b=0;b<blockCount;b++){
                 if(blocks[b].isSleeping === false){
                     World.remove(_engine.world, blocks[b]);
+                }
+            }
+            if((underBlock.isSleeping === false || oldrock.isSleeping === true) && genchanFlag === 4) {
+                genchanHp--;
+                World.remove(_engine.world, underBlock);
+                underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: false,isSleeping:true});
+                World.addBody(_engine.world, underBlock);
+                if(genchanHp === 0) {
+                    World.remove(_engine.world, oldrock);
+                    genchanHp =3;
+                    tmprock = rock;
+                    World.remove(_engine.world, tmprock);
+                    //新しいげんちゃんをセット
+                    rock = Bodies.circle(152, 350, 7.5  , rockOptions);
+                    World.add(_engine.world, rock);
+                    elastic.bodyB = rock;
+                    genchanFlag = 5;
+                    underBlock.isStatic = true;
                 }
             }
         });
@@ -220,10 +254,10 @@
         Engine.clear(_engine);
 
         var offset = 5;
-        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
     };
 
 
