@@ -1,18 +1,7 @@
-html, body {
-  margin: 0;
-  padding: 0.5rem;
+div#result {
+    width: 100px;
+    height: 100px;
 }
-
-body {
-  font-size: 1rem;
-  background: #fff;
+div#world {
+    position: absolute;
 }
-
-h1 {
-  margin: 0 0 1rem 0;
-}
-
-p {
-  font-size: inherit;
-}
-

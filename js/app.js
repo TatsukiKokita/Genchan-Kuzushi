@@ -2,12 +2,8 @@
 
     // Matter aliases
     var Engine = Matter.Engine,
-            Gui = Matter.Gui,
             World = Matter.World,
             Bodies = Matter.Bodies,
-            Body = Matter.Body,
-            Composite = Matter.Composite,
-            Composites = Matter.Composites,
             Common = Matter.Common,
             Constraint = Matter.Constraint,
             Events = Matter.Events,
@@ -15,6 +11,7 @@
 
     var genchanFlag = 0;
     var genchanHp = 3;
+    var usedGenchan = 1;
     var oldrock = {};
 
     var Demo = {};
@@ -62,8 +59,8 @@
         var _world = _engine.world;
 
         Common._seed = 0;
-
         World.clear(_world);
+
         Engine.clear(_engine);
 
         var offset = 5;
@@ -76,7 +73,8 @@
         _world.gravity.x = 0;
         _world.gravity.y = 0;
 
-        World.add(_world, MouseConstraint.create(_engine));
+        var addMouse = MouseConstraint.create(_engine);
+        World.add(_world, addMouse);
 
 //        var stack = Composites.stack(100, 50, 1, 10, 0, 0, function(x, y, column, row) {
 //            
@@ -92,7 +90,7 @@
         blockCount = 0;
         for (var x=0;x<8;x++) {
             for(var y=0;y<6;y++) {
-                blocks[blockCount] =  Bodies.rectangle(32+15+30*x,50+10*y,30,10,{density:100,isStatic:false,isSleeping:true});
+                blocks[blockCount] =  Bodies.rectangle(32+15+30*x,50+10*y,30,10,{density:100,isStatic:true,isSleeping:true});
                 blockCount++;
             }
         }
@@ -174,13 +172,22 @@
                     World.add(_engine.world, rock);
                     elastic.bodyB = rock;
                     underBlock.isStatic = false;
+                    for(b=0;b<blockCount;b++){
+                        blocks[b].isStatic = false;
+                    }
+                    //マウスイベント消したい
+                    World.remove(_engine.world, addMouse);
+                    addMouse = MouseConstraint.create();
+                    
             }
-            for(b=0;b<blockCount;b++){
-                if(blocks[b].isSleeping === false){
-                    blocks[b].isSleeping = true;
-                    World.remove(_engine.world, blocks[b]);
-                    blocksCount--;
-                console.log(blocksCount);
+            if(genchanFlag === 4){
+                for(b=0;b<blockCount;b++){
+                    if(blocks[b].isSleeping === false){
+                        blocks[b].isSleeping = true;
+                        World.remove(_engine.world, blocks[b]);
+                        blocksCount--;
+                    console.log(blocksCount);
+                    }
                 }
             }
             if((underBlock.isSleeping === false || oldrock.isSleeping === true) && genchanFlag === 4) {
@@ -190,6 +197,7 @@
                 World.addBody(_engine.world, underBlock);
                 if(genchanHp === 0) {
                     World.remove(_engine.world, oldrock);
+                    usedGenchan++;
                     genchanHp =3;
                     tmprock = rock;
                     World.remove(_engine.world, tmprock);
@@ -199,11 +207,14 @@
                     elastic.bodyB = rock;
                     genchanFlag = 5;
                     underBlock.isStatic = true;
+                    for(b=0;b<blockCount;b++){
+                        blocks[b].isStatic = true;
+                    }
                 }
             }
             if(blocksCount === 0){
-                window.alert("終了");
                 blocksCount = 48;
+                Demo.resultScene();
             }
         });
         var renderOptions = _engine.render.options;
@@ -213,7 +224,19 @@
 //        World.add(_world, bodyStackX);
 //        World.add(_world, bodyStackY);
     };
-
+    
+    Demo.resultScene = function () {
+        $("div#world").hide();
+        $("div#result").show();
+        $("div#point").text(usedGenchan);
+        $("#next").click(function(){
+            $("div#result").hide();
+            $("div#point").text();
+            Demo.init(); 
+            $("div#world").show();
+        });
+    };
+    
     Demo.updateScene = function () {
         if (!_engine)
             return;
