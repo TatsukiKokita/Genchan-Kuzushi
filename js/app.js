@@ -88,6 +88,7 @@
 //                    }
 //                });
         var blocks = new Object();
+        var blocksCount = 48;
         blockCount = 0;
         for (var x=0;x<8;x++) {
             for(var y=0;y<6;y++) {
@@ -119,7 +120,7 @@
 //            return Bodies.rectangle(x, y, _sceneWidth,1,{ density: 1/_sceneWidth,isStati  c:true,friction:0});
 //        });
 
-        rockOptions = {restitution: 0.1, frictionAir: 0, friction: 0,
+        rockOptions = {restitution: 1.25, frictionAir: 0, friction: 0,
             render: {//ボールのレンダリングの設定
                 sprite: {//スプライトの設定
                     texture: './img/resize/player.png' //スプライトに使うテクスチャ画像を指定
@@ -176,7 +177,10 @@
             }
             for(b=0;b<blockCount;b++){
                 if(blocks[b].isSleeping === false){
+                    blocks[b].isSleeping = true;
                     World.remove(_engine.world, blocks[b]);
+                    blocksCount--;
+                console.log(blocksCount);
                 }
             }
             if((underBlock.isSleeping === false || oldrock.isSleeping === true) && genchanFlag === 4) {
@@ -196,6 +200,10 @@
                     genchanFlag = 5;
                     underBlock.isStatic = true;
                 }
+            }
+            if(blocksCount === 0){
+                window.alert("終了");
+                blocksCount = 48;
             }
         });
         var renderOptions = _engine.render.options;
@@ -222,43 +230,43 @@
 
         Demo[_sceneName]();
     };
-
-    Demo.updateGravity = function () {
-        if (!_engine)
-            return;
-
-        var orientation = window.orientation,
-                gravity = _engine.world.gravity;
-
-        if (orientation === 0) {
-            gravity.x = Common.clamp(event.gamma, -90, 90) / 90;
-            gravity.y = Common.clamp(event.beta, -90, 90) / 90;
-        } else if (orientation === 180) {
-            gravity.x = Common.clamp(event.gamma, -90, 90) / 90;
-            gravity.y = Common.clamp(-event.beta, -90, 90) / 90;
-        } else if (orientation === 90) {
-            gravity.x = Common.clamp(event.beta, -90, 90) / 90;
-            gravity.y = Common.clamp(-event.gamma, -90, 90) / 90;
-        } else if (orientation === -90) {
-            gravity.x = Common.clamp(-event.beta, -90, 90) / 90;
-            gravity.y = Common.clamp(event.gamma, -90, 90) / 90;
-        }
-    };
-
-    Demo.reset = function () {
-        var _world = _engine.world;
-
-        Common._seed = 0;
-
-        World.clear(_world);
-        Engine.clear(_engine);
-
-        var offset = 5;
-        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
-    };
+//
+//    Demo.updateGravity = function () {
+//        if (!_engine)
+//            return;
+//
+//        var orientation = window.orientation,
+//                gravity = _engine.world.gravity;
+//
+//        if (orientation === 0) {
+//            gravity.x = Common.clamp(event.gamma, -90, 90) / 90;
+//            gravity.y = Common.clamp(event.beta, -90, 90) / 90;
+//        } else if (orientation === 180) {
+//            gravity.x = Common.clamp(event.gamma, -90, 90) / 90;
+//            gravity.y = Common.clamp(-event.beta, -90, 90) / 90;
+//        } else if (orientation === 90) {
+//            gravity.x = Common.clamp(event.beta, -90, 90) / 90;
+//            gravity.y = Common.clamp(-event.gamma, -90, 90) / 90;
+//        } else if (orientation === -90) {
+//            gravity.x = Common.clamp(-event.beta, -90, 90) / 90;
+//            gravity.y = Common.clamp(event.gamma, -90, 90) / 90;
+//        }
+//    };
+//
+//    Demo.reset = function () {
+//        var _world = _engine.world;
+//
+//        Common._seed = 0;
+//
+//        World.clear(_world);
+//        Engine.clear(_engine);
+//
+//        var offset = 5;
+//        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
+//        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
+//        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
+//        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
+//    };
 
 
 
