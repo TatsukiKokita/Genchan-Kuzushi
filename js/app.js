@@ -7,11 +7,9 @@
             Common = Matter.Common,
             Constraint = Matter.Constraint,
             Events = Matter.Events,
-            MouseConstraint = Matter.MouseConstraint;
+            MouseConstraint = Matter.MouseConstraint,
+            Mouse = Matter.Mouse;
 
-    var genchanFlag = 0;
-    var genchanHp = 3;
-    var usedGenchan = 1;
     var oldrock = {};
 
     var Demo = {};
@@ -39,7 +37,7 @@
         });
 
         _engine.enableSleeping = true;
-        
+
         setTimeout(function () {
             Engine.run(_engine);
             Demo.updateScene();
@@ -64,11 +62,11 @@
         Engine.clear(_engine);
 
         var offset = 5;
-        var underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true});
-        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
+        var underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: true});
+        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: true}));
         World.addBody(_world, underBlock);
-        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density: 100, isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density: 100, isStatic: true}));
 
         _world.gravity.x = 0;
         _world.gravity.y = 0;
@@ -88,9 +86,9 @@
         var blocks = new Object();
         var blocksCount = 48;
         blockCount = 0;
-        for (var x=0;x<8;x++) {
-            for(var y=0;y<6;y++) {
-                blocks[blockCount] =  Bodies.rectangle(32+15+30*x,50+10*y,30,10,{density:100,isStatic:true,isSleeping:true});
+        for (var x = 0; x < 8; x++) {
+            for (var y = 0; y < 6; y++) {
+                blocks[blockCount] = Bodies.rectangle(32 + 15 + 30 * x, 50 + 10 * y, 30, 10, {density: 100, isStatic: true, isSleeping: true});
                 blockCount++;
             }
         }
@@ -145,19 +143,23 @@
 //            }
 //        });
 
+        var genchanFlag = 0;
+        var genchanHp = 3;
+        var usedGenchan = 1;
         World.add(_world, [rock, elastic]);
-        for (i=0;i<blockCount;i++){
+        for (i = 0; i < blockCount; i++) {
             World.add(_world, blocks[i]);
         }
+                    console.log(blocks);
 
-        
+
         Events.on(_engine, 'tick', function (event) {
-            
+
             if (_engine.input.mouse.button !== -1 && genchanFlag === 5) {
                 genchanFlag = 0;
             }
-            if (_engine.input.mouse.button !== -1 && rock.isSleeping !== true && genchanFlag === 0){
-                genchanFlag=1;
+            if (_engine.input.mouse.button !== -1 && rock.isSleeping !== true && genchanFlag === 0) {
+                genchanFlag = 1;
             }
             if (_engine.input.mouse.button !== -1 && (rock.position.x !== 152 || rock.position.y !== 300) && genchanFlag === 1) {
                 genchanFlag = 2;
@@ -167,52 +169,53 @@
             }
             if (genchanFlag === 3 && rock.position.y < 300) {
                 genchanFlag = 4;
-                    oldrock = rock;
-                    rock = Bodies.circle(152, 350,0.1  , rockOptions);
-                    World.add(_engine.world, rock);
-                    elastic.bodyB = rock;
-                    underBlock.isStatic = false;
+                oldrock = rock;
+                rock = Bodies.circle(152, 350, 0.1, rockOptions);
+                World.add(_engine.world, rock);
+                elastic.bodyB = rock;
+                underBlock.isStatic = false;
                     for(b=0;b<blockCount;b++){
                         blocks[b].isStatic = false;
                     }
-                    //マウスイベント消したい
-                    World.remove(_engine.world, addMouse);
-                    addMouse = MouseConstraint.create();
-                    
+                //マウスイベント消したい
+                World.remove(_engine.world, addMouse);
+
             }
-            if(genchanFlag === 4){
-                for(b=0;b<blockCount;b++){
-                    if(blocks[b].isSleeping === false){
+            if (genchanFlag === 4) {
+                for (b = 0; b < blockCount; b++) {
+                    if (blocks[b].isSleeping === false) {
                         blocks[b].isSleeping = true;
-                        World.remove(_engine.world, blocks[b]);
-                        blocksCount--;
-                    console.log(blocksCount);
+                        if (judgeInclusion(oldrock, blocks[b], 20) === true) {
+                            World.remove(_engine.world, blocks[b]);
+                            blocksCount--;
+                        }
                     }
                 }
             }
-            if((underBlock.isSleeping === false || oldrock.isSleeping === true) && genchanFlag === 4) {
+            if ((underBlock.isSleeping === false || oldrock.isSleeping === true) && genchanFlag === 4) {
                 genchanHp--;
                 World.remove(_engine.world, underBlock);
-                underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: false,isSleeping:true});
+                underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: false, isSleeping: true});
                 World.addBody(_engine.world, underBlock);
-                if(genchanHp === 0) {
+                if (genchanHp === 0) {
                     World.remove(_engine.world, oldrock);
                     usedGenchan++;
-                    genchanHp =3;
+                    genchanHp = 3;
                     tmprock = rock;
                     World.remove(_engine.world, tmprock);
                     //新しいげんちゃんをセット
-                    rock = Bodies.circle(152, 350, 7.5  , rockOptions);
+                    rock = Bodies.circle(152, 350, 7.5, rockOptions);
                     World.add(_engine.world, rock);
                     elastic.bodyB = rock;
                     genchanFlag = 5;
                     underBlock.isStatic = true;
-                    for(b=0;b<blockCount;b++){
+                    for (b = 0; b < blockCount; b++) {
                         blocks[b].isStatic = true;
                     }
+                    World.add(_engine.world, addMouse);
                 }
             }
-            if(blocksCount === 0){
+            if (blocksCount === 0) {
                 blocksCount = 48;
                 Demo.resultScene();
             }
@@ -224,19 +227,20 @@
 //        World.add(_world, bodyStackX);
 //        World.add(_world, bodyStackY);
     };
-    
+
     Demo.resultScene = function () {
         $("div#world").hide();
         $("div#result").show();
         $("div#point").text(usedGenchan);
-        $("#next").click(function(){
+        $("#next").click(function () {
             $("div#result").hide();
             $("div#point").text();
-            Demo.init(); 
+            Demo.reset();
+            Demo.init();
             $("div#world").show();
         });
     };
-    
+
     Demo.updateScene = function () {
         if (!_engine)
             return;
@@ -276,21 +280,74 @@
 //        }
 //    };
 //
-//    Demo.reset = function () {
-//        var _world = _engine.world;
-//
-//        Common._seed = 0;
-//
-//        World.clear(_world);
-//        Engine.clear(_engine);
-//
+    Demo.reset = function () {
+        var _world = _engine.world;
+
+        Common._seed = 0;
+
+        World.clear(_world);
+        Engine.clear(_engine);
+        $("#world canvas").remove();
+
 //        var offset = 5;
 //        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
 //        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
 //        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
 //        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
-//    };
+    };
 
+    /*
+     * p1 rock
+     * p2 block
+     * r rock range
+     */
+    judgeInclusion = function (p1, p2, r) {
 
+        var p1x = p1.position.x;
+        var p1y = p1.position.y;
+        var p2x = p2.position.x;
+        var p2y = p2.position.y;
+
+        var p2 = [[p2x - 15, p2y + 5], [p2x + 15, p2y + 5], [p2x + 15, p2y - 5], [p2x - 15, p2y - 5]]
+
+        var v2 = [[30, 0], [0, -10], [-30, 0], [0, 10]];
+
+        var v = new Array();
+        v[0] = [p2x - 15 - p1x, p2y - 5 - p1y];
+        v[1] = [p2x - 15 - p1x, p2y + 5 - p1y];
+        v[2] = [p2x + 15 - p1x, p2y - 5 - p1y];
+        v[3] = [p2x + 15 - p1x, p2y + 5 - p1y];
+
+        var c = 0;
+        var check = false;
+        var finalcheckcount = 0;
+        for (a = 0; a <= 3; a++) {
+            c++;
+            if (c === 4) {
+                c = 0;
+            }
+            if (v[a][0] * v2[a][0] + v[a][1] * v2[a][1] <= 0) {
+                if (v[c][0] * v2[a][0] + v[c][1] * v2[a][1] >= 0) {
+                    if (Math.abs(v[a][0] * v2[a][1] - v[a][1] * v2[a][0]) / Math.sqrt(Math.pow(v[a][0], 2) + Math.pow(v[a][1]), 2) <= r) {
+                        check = true;
+                    }
+                }
+            }
+            if (!check) {
+                if (Math.pow(p1x - p2[a][0], 2) + Math.pow(p1y - p2[a][1], 2) <= Math.pow(r, 2) || Math.pow(p1x - p2[c][0], 2) + Math.pow((p1y - p2[c][1]), 2) <= Math.pow(r, 2)) {
+                    check = true;
+                }
+            }
+            if (!check) {
+                if (v[a][0] * v2[a][0] + v[a][1] * v2[a][1] <= 0) {
+                    finalcheckcount++;
+                }
+            }
+        }
+        if (!check && finalcheckcount === 4) {
+            check = true;
+        }
+        return check;
+    };
 
 })();
