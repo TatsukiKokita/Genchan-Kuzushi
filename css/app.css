@@ -1,7 +1,16 @@
-div#result {
-    width: 100px;
-    height: 100px;
+div {
+    width: 304px;
+    height: 440px;
+}
+div#start {
+    position: absolute;
 }
 div#world {
     position: absolute;
+}
+div#result {
+    position: absolute;
+}
+#world, #result {
+  display: none;
 }

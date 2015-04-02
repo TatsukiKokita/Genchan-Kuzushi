@@ -52,7 +52,14 @@
 //        }, false);
     };
 
-    window.addEventListener('load', Demo.init);
+    //window.addEventListener('load', Demo.init);
+
+    $("button#start").click(function(){
+        $("div#start").hide();
+        $("div#world").show();
+        Demo.init();
+    });
+
 
     Demo.mixed = function () {
         var _world = _engine.world;
@@ -233,12 +240,12 @@
         $("div#world").hide();
         $("div#result").show();
         $("div#point").text(usedGenchan);
-        $("#next").click(function () {
+        $("button#next").click(function () {
             $("div#result").hide();
             $("div#point").text();
             Demo.reset();
             Demo.init();
-            $("div#world").show();
+            $("div#start").show();
         });
     };
 
