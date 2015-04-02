@@ -22,6 +22,7 @@
     _sceneWidth = 304;
     _sceneHeight = 440;
 
+    var usedGenchan;
     Demo.init = function () {
         var canvasContainer = document.getElementById('world');
 
@@ -145,7 +146,7 @@
 
         var genchanFlag = 0;
         var genchanHp = 3;
-        var usedGenchan = 1;
+        usedGenchan = 1;
         World.add(_world, [rock, elastic]);
         for (i = 0; i < blockCount; i++) {
             World.add(_world, blocks[i]);
@@ -283,7 +284,6 @@
     Demo.reset = function () {
         var _world = _engine.world;
 
-        Common._seed = 0;
 
         World.clear(_world);
         Engine.clear(_engine);
