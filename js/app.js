@@ -82,15 +82,6 @@
         var addMouse = MouseConstraint.create(_engine);
         World.add(_world, addMouse);
 
-//        var stack = Composites.stack(100, 50, 1, 10, 0, 0, function(x, y, column, row) {
-//            
-//            return Bodies.rectangle(x, y, 50, 50, {
-//                    render: {//ボールのレンダリングの設定
-//                        sprite: {//スプライトの設定
-//                            texture: './img/resize/player.png' //スプライトに使うテクスチャ画像を指定
-//                        }
-//                    }
-//                });
         var blocks = new Object();
         var blocksCount = 48;
         blockCount = 0;
@@ -100,31 +91,8 @@
                 blockCount++;
             }
         }
-//        var stack = Composites.stack(32, 50, 8, 6, 0, 0, function (x, y, column, row) {
-//
-//            return Bodies.rectangle(x, y, 30, 10, {isStatic: true});
-////            switch (Math.round(Common.random(0, 1))) {
-////                
-////            case 0:
-////                if (Common.random() < 0.8) {
-////                    return Bodies.rectangle(x, y, Common.random(20, 40), Common.random(20, 40), { friction: 0.01, restitution: 0.4 });
-////                } else {
-////                    return Bodies.rectangle(x, y, Common.random(80, 120), Common.random(20, 30), { friction: 0.01, restitution: 0.4 });
-////                }
-////                break;
-////            case 1:
-////                return Bodies.polygon(x, y, Math.round(Common.random(4, 6)), Common.random(20, 40), { friction: 0.01, restitution: 0.4 });
-////            
-////            }
-//        });
-//        var bodyStackX = Composites.stack(5,5,2,1,_sceneWidth-5,0,function(x,y,column,row){
-//            return Bodies.rectangle(x, y, 1, _sceneHeight,{ density: 1/_sceneHeight,isStatic:true,friction:0});
-//        });
-//        var bodyStackY = Composites.stack(5,5,1,2,0,_sceneHeight,function(x,y,column,row){
-//            return Bodies.rectangle(x, y, _sceneWidth,1,{ density: 1/_sceneWidth,isStati  c:true,friction:0});
-//        });
 
-        rockOptions = {restitution: 1.25, frictionAir: 0, friction: 0,
+        rockOptions = {density: 1,restitution: 1.25, frictionAir: 0, friction: 0,
             render: {//ボールのレンダリングの設定
                 sprite: {//スプライトの設定
                     texture: './img/resize/player.png' //スプライトに使うテクスチャ画像を指定
@@ -142,14 +110,6 @@
                 strokeStyle: '#dfa417'
             }
         });
-//
-//        var genchan = Bodies.circle(152, 300, 7.5, {restitution: 1.25, frictionAir: 0, friction: 0,
-//            render: {//ボールのレンダリングの設定
-//                sprite: {//スプライトの設定
-//                    texture: './img/resize/player.png' //スプライトに使うテクスチャ画像を指定
-//                }
-//            }
-//        });
 
         var genchanFlag = 0;
         var genchanHp = 3;
@@ -182,6 +142,7 @@
                 World.add(_engine.world, rock);
                 elastic.bodyB = rock;
                 underBlock.isStatic = false;
+                underBlock.isSleeping = true;
                     for(b=0;b<blockCount;b++){
                         blocks[b].isStatic = false;
                     }
@@ -231,9 +192,6 @@
         var renderOptions = _engine.render.options;
         renderOptions.wireframes = false;
         renderOptions.showAngleIndicator = false;
-
-//        World.add(_world, bodyStackX);
-//        World.add(_world, bodyStackY);
     };
 
     Demo.resultScene = function () {
@@ -244,7 +202,6 @@
             $("div#result").hide();
             $("div#point").text();
             Demo.reset();
-            Demo.init();
             $("div#start").show();
         });
     };
@@ -265,29 +222,7 @@
 
         Demo[_sceneName]();
     };
-//
-//    Demo.updateGravity = function () {
-//        if (!_engine)
-//            return;
-//
-//        var orientation = window.orientation,
-//                gravity = _engine.world.gravity;
-//
-//        if (orientation === 0) {
-//            gravity.x = Common.clamp(event.gamma, -90, 90) / 90;
-//            gravity.y = Common.clamp(event.beta, -90, 90) / 90;
-//        } else if (orientation === 180) {
-//            gravity.x = Common.clamp(event.gamma, -90, 90) / 90;
-//            gravity.y = Common.clamp(-event.beta, -90, 90) / 90;
-//        } else if (orientation === 90) {
-//            gravity.x = Common.clamp(event.beta, -90, 90) / 90;
-//            gravity.y = Common.clamp(-event.gamma, -90, 90) / 90;
-//        } else if (orientation === -90) {
-//            gravity.x = Common.clamp(-event.beta, -90, 90) / 90;
-//            gravity.y = Common.clamp(event.gamma, -90, 90) / 90;
-//        }
-//    };
-//
+
     Demo.reset = function () {
         var _world = _engine.world;
 
@@ -296,11 +231,6 @@
         Engine.clear(_engine);
         $("#world canvas").remove();
 
-//        var offset = 5;
-//        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
-//        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density:100,isStatic: true}));
-//        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
-//        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density:100,isStatic: true}));
     };
 
     /*
