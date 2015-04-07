@@ -1,26 +1,16 @@
 {
   "version": "0.1.0",
-  "name": "test",
-  "description": "A template with the bare minimum structure",
+  "name": "Genchan Kuzushi",
+  "description": "Genchanを使ったブロック崩しです。",
   "launch_path": "/index.html",
   "icons": {
-    "16": "/img/icon.png"
+    "128": "/img/icon.png"
   },
   "developer": {
-    "name": "Your name",
-    "url": "http://example.com"
+    "name": "Tatsuki Kokita",
+    "url": "http://uhero.co.jp"
   },
-  "type": "privileged",
-  "permissions": {},
-  "installs_allowed_from": [
-    "*"
-  ],
-  "locales": {
-    "es": {
-      "name": "Aplicacion vacia privilegiada",
-      "description": "Una plantilla con la minima estructura",
-      "permissions": {}
-    }
-  },
-  "default_locale": "en"
+  "type": "web",
+  "default_locale": "ja",
+  "csp": "'default-src' *;'script-src' 'self';'object-src' 'none';'frame-src' 'self';'style-src' 'unsafe-inline' 'self';'connect-src'"
 }
