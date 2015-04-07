@@ -1,14 +1,16 @@
-div {
+div#start {
     width: 304px;
     height: 440px;
-}
-div#start {
     position: absolute;
 }
 div#world {
+    width: 304px;
+    height: 440px;
     position: absolute;
 }
 div#result {
+    width: 304px;
+    height: 440px;
     position: absolute;
 }
 #world, #result {
