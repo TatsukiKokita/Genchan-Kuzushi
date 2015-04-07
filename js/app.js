@@ -118,7 +118,6 @@
         for (i = 0; i < blockCount; i++) {
             World.add(_world, blocks[i]);
         }
-                    console.log(blocks);
 
 
         Events.on(_engine, 'tick', function (event) {
