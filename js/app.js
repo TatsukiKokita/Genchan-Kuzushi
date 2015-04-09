@@ -91,7 +91,7 @@
         rockOptions = {density: 1,restitution: 1.25, frictionAir: 0, friction: 0,
             render: {//ボールのレンダリングの設定
                 sprite: {//スプライトの設定
-                    texture: './img/resize/player.png' //スプライトに使うテクスチャ画像を指定
+                    texture: './img/player.png' //スプライトに使うテクスチャ画像を指定
                 }
             }
         },
