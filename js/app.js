@@ -43,16 +43,8 @@
             Engine.run(_engine);
             Demo.updateScene();
         }, 0.1);
-
-//        window.addEventListener('deviceorientation', Demo.updateGravity, true);
-////        window.addEventListener('touchstart', Demo.fullscreen);
-//        window.addEventListener('orientationchange', function () {
-////            Demo.updateGravity();
-//            Demo.updateScene();
-//        }, false);
     };
 
-    //window.addEventListener('load', Demo.init);
 
     $("button#startbutton").click(function(){
         $("div#start").hide();
