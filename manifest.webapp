@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "name": "Genchan-Kuzushi",
+  "name": "Gen-Kuzushi",
   "description": "Genchanを使ったブロック崩しです。",
   "launch_path": "/index.html",
   "icons": {
@@ -10,7 +10,6 @@
     "name": "Tatsuki Kokita",
     "url": "http://uhero.co.jp"
   },
-  "type": "web",
   "default_locale": "ja",
   "csp": "'default-src' *;'script-src' 'self';'object-src' 'none';'frame-src' 'self';'style-src' 'unsafe-inline' 'self';'connect-src'"
 }
