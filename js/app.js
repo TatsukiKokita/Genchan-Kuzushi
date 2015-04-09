@@ -54,7 +54,7 @@
 
     //window.addEventListener('load', Demo.init);
 
-    $("button#start").click(function(){
+    $("button#startbutton").click(function(){
         $("div#start").hide();
         $("div#world").show();
         Demo.init();
@@ -70,11 +70,14 @@
         Engine.clear(_engine);
 
         var offset = 5;
-        var underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: true});
-        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: true}));
+            var underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: true,   render: {strokeStyle: "#bbbbbb",fillStyle: "#eeeeee"}});
+        World.addBody(_world, Bodies.rectangle(_sceneWidth * 0.5, -offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: true, 
+            render: {strokeStyle: "#bbbbbb",fillStyle: "#eeeeee"}}));
         World.addBody(_world, underBlock);
-        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density: 100, isStatic: true}));
-        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density: 100, isStatic: true}));
+        World.addBody(_world, Bodies.rectangle(_sceneWidth + offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density: 100, isStatic: true, 
+            render: {strokeStyle: "#bbbbbb",fillStyle: "#eeeeee"}}));
+        World.addBody(_world, Bodies.rectangle(-offset, _sceneHeight * 0.5, 20, _sceneHeight + 0.5, {density: 100, isStatic: true, 
+            render: {strokeStyle: "#bbbbbb",fillStyle: "#eeeeee"}}));
 
         _world.gravity.x = 0;
         _world.gravity.y = 0;
@@ -87,7 +90,8 @@
         blockCount = 0;
         for (var x = 0; x < 8; x++) {
             for (var y = 0; y < 6; y++) {
-                blocks[blockCount] = Bodies.rectangle(32 + 15 + 30 * x, 50 + 10 * y, 30, 10, {density: 100, isStatic: true, isSleeping: true});
+                blocks[blockCount] = Bodies.rectangle(32 + 15 + 30 * x, 50 + 10 * y, 30, 10, {density: 100, isStatic: true, isSleeping: true, 
+            render: {strokeStyle: "#bbbbbb",fillStyle: "#eeeeee"}});
                 blockCount++;
             }
         }
@@ -140,6 +144,9 @@
                 rock = Bodies.circle(152, 350, 0.1, rockOptions);
                 World.add(_engine.world, rock);
                 elastic.bodyB = rock;
+                tmprock = rock;
+                World.remove(_engine.world, tmprock);
+                World.remove(_engine.world, elastic);
                 underBlock.isStatic = false;
                 underBlock.isSleeping = true;
                     for(b=0;b<blockCount;b++){
@@ -163,17 +170,16 @@
             if ((underBlock.isSleeping === false || oldrock.isSleeping === true) && genchanFlag === 4) {
                 genchanHp--;
                 World.remove(_engine.world, underBlock);
-                underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: false, isSleeping: true});
+                underBlock = Bodies.rectangle(_sceneWidth * 0.5, _sceneHeight + offset, _sceneWidth + 0.5, 20, {density: 100, isStatic: false, isSleeping: true, 
+            render: {strokeStyle: "#bbbbbb",fillStyle: "#eeeeee"}});
                 World.addBody(_engine.world, underBlock);
                 if (genchanHp === 0) {
                     World.remove(_engine.world, oldrock);
                     usedGenchan++;
                     genchanHp = 3;
-                    tmprock = rock;
-                    World.remove(_engine.world, tmprock);
                     //新しいげんちゃんをセット
                     rock = Bodies.circle(152, 350, 7.5, rockOptions);
-                    World.add(_engine.world, rock);
+                    World.add(_world, [rock, elastic]);
                     elastic.bodyB = rock;
                     genchanFlag = 5;
                     underBlock.isStatic = true;
@@ -196,7 +202,7 @@
     Demo.resultScene = function () {
         $("div#world").hide();
         $("div#result").show();
-        $("div#point").text(usedGenchan);
+        $("p#point").text(usedGenchan);
         $("button#next").click(function () {
             $("div#result").hide();
             $("div#point").text();
